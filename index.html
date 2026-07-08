@@ -103,6 +103,18 @@
   .tier3 .chip{border:1px solid rgba(139,155,255,.5)} .tier3 .name{color:var(--violet)}
   .empty-chip{max-width:220px;width:100%;text-align:center;border-radius:16px;padding:12px;border:1px dashed var(--line);
     color:var(--muted);font-family:var(--disp);letter-spacing:.08em;font-size:.68rem;text-transform:uppercase}
+  /* comparten plataforma sin agrandarla */
+  .teams.multi{gap:6px}
+  .teams.multi .chip{padding:7px 11px;border-radius:12px}
+  .teams.multi .chip .name{font-size:clamp(.82rem,1.6vw,1rem)}
+  .teams.multi .chip .pts{font-size:.74rem}
+  /* en cola de teletransporte */
+  .queue{margin:28px auto 0;text-align:center;max-width:800px}
+  .qlabel{font-family:var(--disp);letter-spacing:.16em;font-size:.6rem;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:12px;opacity:.8}
+  .qitems{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .qpill{display:inline-flex;align-items:center;gap:9px;background:rgba(10,30,58,.5);border:1px solid var(--line);border-radius:10px;
+    padding:7px 13px;font-weight:600;color:var(--ink);font-size:.92rem;opacity:.72}
+  .qpill .qpts{font-family:var(--disp);font-size:.68rem;color:var(--muted);letter-spacing:.04em}
 
   .base{position:relative;z-index:2;width:clamp(120px,19vw,180px);height:30px;border-radius:50%;display:grid;place-items:center}
   .tier1 .base{background:radial-gradient(ellipse at center,rgba(191,233,255,.55),transparent 68%);box-shadow:0 0 34px rgba(191,233,255,.5),inset 0 0 20px rgba(191,233,255,.4)}
@@ -243,23 +255,31 @@
     const maxScore=teams.reduce((m,t)=>Math.max(m,t.score),0);
     if(!teams.length){ el.innerHTML=`<div class="msg"><div class="big">Sin tripulación</div><p>Cargá los equipos en la planilla y la sala de teletransporte los materializa acá.</p></div>`; return; }
     if(maxScore<=0){ el.innerHTML=`<div class="msg"><div class="big">Coordenadas sin fijar</div><p>Toda la tripulación arranca en cero. Con la primera misión resuelta, las plataformas se encienden en vivo.</p></div>`; return; }
-    const ranked=rankTeams(teams), byTier={1:[],2:[],3:[]};
-    ranked.forEach(t=>{ if(t.pos<=3) byTier[t.pos].push(t); });
+    // Al podio suben solo los que tienen puntos; los 0 (y el resto) van "en cola"
+    const scoring=teams.filter(t=>t.score>0);
+    const ranked=rankTeams(scoring), byTier={1:[],2:[],3:[]}, onPodium=new Set();
+    ranked.forEach(t=>{ if(t.pos<=3){ byTier[t.pos].push(t); onPodium.add(t); } });
+    const queue=teams.filter(t=>!onPodium.has(t)).sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name));
     const H={1:290,2:225,3:175};
     let html='<div class="rotors">';
     [2,1,3].forEach(p=>{
       const cls=TIER[p-1], list=byTier[p], h=H[p];
-      let chips="", idle=list.length?"":"idle";
+      let chips="", idle=list.length?"":"idle", multi=list.length>1?"multi":"";
       if(list.length) list.forEach((t,i)=>{ chips+=`<div class="chip" style="animation-delay:${i*0.09}s"><div class="name">${esc(t.name)}</div><div class="pts"><b>${fmt(t.score)}</b> pts</div></div>`; });
       else chips=`<div class="empty-chip">Sin fijar</div>`;
       html+=`<div class="rotor-col ${cls} ${idle}" style="--h:${h}px">
         <div class="tube"><span class="rod" style="left:32%"></span><span class="rod" style="left:66%"></span><div class="rotorlight"></div></div>
-        <div class="teams">${chips}</div>
+        <div class="teams ${multi}">${chips}</div>
         <div class="base"><span class="pnum">${p}</span></div>
         <div class="rlabel">Plataforma 0${p}</div>
       </div>`;
     });
-    el.innerHTML=html+'</div>';
+    html+='</div>';
+    if(queue.length){
+      let pills=queue.map(t=>`<span class="qpill">${esc(t.name)}<span class="qpts">${fmt(t.score)} pts</span></span>`).join("");
+      html+=`<div class="queue"><span class="qlabel">— En cola de teletransporte —</span><div class="qitems">${pills}</div></div>`;
+    }
+    el.innerHTML=html;
   }
 
   function renderMissions(teams,missions){
