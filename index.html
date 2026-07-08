@@ -3,156 +3,185 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EDET League · Tablero</title>
+<title>EDET League · Bitácora de la Enterprise</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --stage-0:#0A0916; --stage-1:#14102A; --stage-2:#1E1840;
-    --ink:#F3EFFF; --muted:#948CC0; --line:rgba(155,145,220,.16);
-    --gold:#FFD86B;   --gold-edge:#B8860B; --gold-glow:rgba(255,205,90,.45);
-    --silver:#DDE5F2; --silver-edge:#8B96A8;
-    --bronze:#E4975A; --bronze-edge:#A85C2E;
-    --accent:#FF3E9A; --accent-soft:rgba(255,62,154,.14);
-    --disp:'Bricolage Grotesque',system-ui,sans-serif;
-    --util:'Space Grotesk',system-ui,sans-serif;
+    --deep:#04101F; --navy:#0A2A52; --panel:#0C2242; --panel-2:#123258;
+    --tardis:#1466B0; --cyan:#4FC3F7; --ice:#BFE9FF; --violet:#8B9BFF;
+    --glow:#5FD0FF; --ink:#DDEBFF; --muted:#7F9BC6; --line:rgba(95,180,255,.18);
+    --disp:'Orbitron',system-ui,sans-serif;
+    --util:'Rajdhani',system-ui,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
-  body{font-family:var(--util);color:var(--ink);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  body{font-family:var(--util);color:var(--ink);min-height:100vh;overflow-x:hidden;position:relative;-webkit-font-smoothing:antialiased;
     background:
-      radial-gradient(120% 90% at 50% -10%, rgba(255,62,154,.10), transparent 55%),
-      radial-gradient(120% 120% at 50% 0%, rgba(255,216,107,.09), transparent 45%),
-      radial-gradient(100% 100% at 50% 120%, #060510, transparent 60%),
-      var(--stage-0);}
-  .orb{position:fixed;border-radius:50%;filter:blur(70px);opacity:.5;z-index:0;pointer-events:none;animation:drift 22s ease-in-out infinite}
-  .orb.a{width:420px;height:420px;background:rgba(255,62,154,.22);top:-120px;left:-80px}
-  .orb.b{width:380px;height:380px;background:rgba(124,90,255,.22);bottom:-120px;right:-80px;animation-delay:-8s}
-  @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
+      radial-gradient(80% 60% at 50% 0%, #0d2b52, transparent 60%),
+      radial-gradient(90% 80% at 50% 110%, #0a2145, transparent 60%),
+      var(--deep);}
+  /* roundel wall */
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55;
+    background-image:
+      radial-gradient(circle, rgba(95,180,255,.055) 0 10px, transparent 11px),
+      radial-gradient(circle, transparent 12px, rgba(95,180,255,.07) 13px 15px, transparent 16px);
+    background-size:66px 66px;background-position:center;}
+  /* time vortex */
+  body::after{content:"";position:fixed;left:50%;top:36%;width:150vmax;height:150vmax;transform:translate(-50%,-50%);
+    z-index:0;pointer-events:none;opacity:.5;border-radius:50%;filter:blur(34px);
+    background:conic-gradient(from 0deg, transparent, rgba(79,195,247,.12), transparent 38%, rgba(139,155,255,.10), transparent 68%, rgba(79,195,247,.08), transparent);
+    animation:vortex 70s linear infinite;}
+  @keyframes vortex{to{transform:translate(-50%,-50%) rotate(360deg)}}
 
-  .wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:28px 22px 44px;min-height:100vh;display:flex;flex-direction:column}
-  header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap}
-  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:600;letter-spacing:.22em;
-    text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border:1px solid rgba(255,62,154,.3);padding:6px 12px;border-radius:100px}
-  .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
-  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,62,154,.6)}70%{box-shadow:0 0 0 9px rgba(255,62,154,0)}100%{box-shadow:0 0 0 0 rgba(255,62,154,0)}}
-  h1{font-family:var(--disp);font-weight:800;font-size:clamp(2.4rem,6.2vw,4.4rem);line-height:.92;letter-spacing:-.02em;margin-top:10px}
-  h1 .lg{color:transparent;-webkit-text-stroke:1.5px var(--gold);text-shadow:0 0 30px var(--gold-glow)}
+  .tardis{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:24px 18px 34px;min-height:100vh;display:flex;flex-direction:column;gap:16px}
 
-  .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .status{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted);padding:8px 12px;
-    border:1px solid var(--line);border-radius:100px;background:rgba(255,255,255,.02)}
-  .status .live{width:7px;height:7px;border-radius:50%;background:#43e08a;box-shadow:0 0 8px #43e08a}
-  .status.err .live{background:#ff5a5a;box-shadow:0 0 8px #ff5a5a}
-  button{font-family:var(--util);font-weight:600;font-size:.82rem;color:var(--ink);cursor:pointer;
-    background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:100px;padding:9px 16px;transition:.18s ease}
-  button:hover{background:rgba(255,255,255,.09);border-color:rgba(155,145,220,.35)}
-  button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  /* header banner */
+  header{background:linear-gradient(180deg,var(--navy),var(--panel));border:1px solid var(--line);
+    border-radius:10px;padding:20px 30px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    box-shadow:0 0 50px rgba(20,102,176,.3), inset 0 0 40px rgba(79,195,247,.07)}
+  .who{display:flex;flex-direction:column;gap:3px}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--disp);font-weight:600;letter-spacing:.22em;
+    font-size:.66rem;color:var(--cyan);text-transform:uppercase}
+  .eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--glow);box-shadow:0 0 10px var(--glow);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(95,208,255,.6)}70%{box-shadow:0 0 0 10px rgba(95,208,255,0)}100%{box-shadow:0 0 0 0 rgba(95,208,255,0)}}
+  h1{font-family:var(--disp);font-weight:800;font-size:clamp(1.7rem,4.6vw,3rem);letter-spacing:.06em;line-height:1;
+    color:var(--ice);text-shadow:0 0 26px rgba(95,208,255,.55)}
+  .sub{font-family:var(--util);font-weight:600;letter-spacing:.16em;font-size:.78rem;color:var(--muted);text-transform:uppercase}
+  .ctl{display:flex;align-items:center;gap:10px}
+  .status{display:inline-flex;align-items:center;gap:8px;font-family:var(--disp);letter-spacing:.08em;font-size:.72rem;font-weight:500;
+    color:var(--ink);background:rgba(4,16,31,.55);border:1px solid var(--line);border-radius:100px;padding:8px 15px;text-transform:uppercase}
+  .status .live{width:8px;height:8px;border-radius:50%;background:#3fe6b0;box-shadow:0 0 10px #3fe6b0}
+  .status.err .live{background:#ff6b6b;box-shadow:0 0 10px #ff6b6b}
+  .btn{font-family:var(--disp);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:.72rem;color:#04121f;
+    background:linear-gradient(180deg,var(--cyan),var(--tardis));border:none;border-radius:100px;padding:9px 18px;cursor:pointer;transition:.15s;
+    box-shadow:0 0 18px rgba(79,195,247,.4)}
+  .btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+  .btn:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
 
-  /* segmented tabs */
-  .tabs{display:inline-flex;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:100px;padding:4px;margin:22px auto 0}
-  .tab{border:none;background:transparent;border-radius:100px;padding:9px 22px}
-  .tab.active{background:var(--accent-soft);color:#ffd0e6;box-shadow:inset 0 0 0 1px rgba(255,62,154,.4)}
+  /* console screen */
+  .screen{flex:1;background:linear-gradient(180deg,rgba(12,34,66,.9),rgba(8,24,48,.92));border:1px solid var(--line);
+    border-radius:40px;padding:22px 26px 28px;display:flex;flex-direction:column;min-height:58vh;position:relative;overflow:hidden;
+    box-shadow:inset 0 0 60px rgba(20,102,176,.18)}
+  .tabs{display:inline-flex;gap:8px;margin:0 auto}
+  .tab{font-family:var(--disp);font-weight:600;letter-spacing:.09em;text-transform:uppercase;font-size:.74rem;color:var(--muted);
+    background:rgba(4,16,31,.5);border:1px solid var(--line);border-radius:100px;padding:10px 22px;cursor:pointer;transition:.15s}
+  .tab:hover{color:var(--ice)}
+  .tab.active{background:linear-gradient(180deg,var(--cyan),var(--tardis));color:#04121f;border-color:transparent;box-shadow:0 0 20px rgba(79,195,247,.45)}
+  .view{display:none;flex:1}.view.active{display:flex;flex-direction:column;justify-content:center}
+  .scanline{font-family:var(--disp);letter-spacing:.2em;font-size:.62rem;color:var(--cyan);text-transform:uppercase;text-align:center;margin:14px 0 6px;opacity:.85}
 
-  .stage{flex:1;display:flex;flex-direction:column;justify-content:center;position:relative;padding-top:8px}
-  .view{display:none}.view.active{display:block}
+  /* ---- Rotor podium ---- */
+  .rotors{display:grid;grid-template-columns:1fr 1.2fr 1fr;align-items:end;gap:clamp(10px,3vw,40px);max-width:860px;margin:6px auto 0;width:100%}
+  .rotor-col{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:var(--h,240px)}
+  .tube{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);width:clamp(88px,13vw,132px);height:var(--h,240px);z-index:0;
+    border-radius:60px 60px 40px 40px/34px 34px 24px 24px;overflow:hidden;
+    background:linear-gradient(90deg,rgba(95,208,255,.04),rgba(95,208,255,.2) 22%,rgba(95,208,255,.05) 50%,rgba(95,208,255,.2) 78%,rgba(95,208,255,.04));
+    border:1px solid rgba(95,208,255,.35)}
+  .tube::before{content:"";position:absolute;left:0;right:0;top:-2px;height:14px;border-radius:50%;background:rgba(95,208,255,.5);box-shadow:0 0 18px rgba(95,208,255,.5)}
+  .tube .rod{position:absolute;top:0;bottom:0;width:2px;background:rgba(191,233,255,.35)}
+  .rotorlight{position:absolute;left:-10%;right:-10%;height:44%;border-radius:50%;filter:blur(6px);animation:pump 3.4s ease-in-out infinite}
+  @keyframes pump{0%,100%{top:52%}50%{top:6%}}
+  .tier1 .tube{box-shadow:0 0 60px rgba(191,233,255,.5),inset 0 0 30px rgba(191,233,255,.25)}
+  .tier1 .rotorlight{background:radial-gradient(ellipse at center,rgba(234,247,255,.95),rgba(120,220,255,.3) 55%,transparent 72%)}
+  .tier2 .tube{box-shadow:0 0 46px rgba(79,195,247,.4),inset 0 0 26px rgba(79,195,247,.22)}
+  .tier2 .rotorlight{background:radial-gradient(ellipse at center,rgba(79,195,247,.9),rgba(79,195,247,.25) 55%,transparent 72%)}
+  .tier3 .tube{box-shadow:0 0 40px rgba(139,155,255,.35),inset 0 0 24px rgba(139,155,255,.2)}
+  .tier3 .rotorlight{background:radial-gradient(ellipse at center,rgba(139,155,255,.85),rgba(139,155,255,.22) 55%,transparent 72%)}
+  .idle .tube{opacity:.35;filter:grayscale(.4)}
 
-  /* ---- Podio ---- */
-  .spot{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:min(560px,80%);height:55%;
-    background:radial-gradient(60% 100% at 50% 0%, rgba(255,216,107,.16), transparent 70%);pointer-events:none;z-index:0}
-  .podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:clamp(10px,2.6vw,30px);
-    position:relative;z-index:1;max-width:920px;margin:24px auto 0;width:100%}
-  .col{display:flex;flex-direction:column;align-items:center}
-  .teams{display:flex;flex-direction:column;gap:8px;width:100%;align-items:center;margin-bottom:16px}
-  .chip{width:100%;max-width:250px;text-align:center;border-radius:14px;padding:11px 12px;
-    background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));border:1px solid var(--line);
-    backdrop-filter:blur(6px);animation:rise .55s cubic-bezier(.2,.8,.25,1) both}
-  .chip .name{font-family:var(--disp);font-weight:700;font-size:clamp(.95rem,1.9vw,1.15rem);line-height:1.1}
-  .chip .pts{margin-top:3px;font-weight:700;font-size:.82rem;color:var(--muted);font-feature-settings:"tnum" 1}
-  .chip .pts b{color:var(--ink);font-size:1.05rem}
-  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-  .gold .chip{border-color:rgba(255,216,107,.55);box-shadow:0 0 34px var(--gold-glow)} .gold .chip .name{color:var(--gold)}
-  .silver .chip{border-color:rgba(221,229,242,.4)} .silver .chip .name{color:var(--silver)}
-  .bronze .chip{border-color:rgba(228,151,90,.42)} .bronze .chip .name{color:var(--bronze)}
-  .empty-chip{width:100%;max-width:250px;text-align:center;border-radius:14px;padding:14px 12px;border:1px dashed var(--line);color:var(--muted);font-size:.82rem}
-  .medal{width:clamp(40px,7vw,54px);height:clamp(40px,7vw,54px);border-radius:50%;display:grid;place-items:center;
-    font-size:clamp(1.2rem,3vw,1.6rem);margin-bottom:-14px;position:relative;z-index:2;box-shadow:0 6px 20px rgba(0,0,0,.4)}
-  .gold .medal{background:radial-gradient(circle at 35% 30%,#fff2c2,var(--gold) 55%,var(--gold-edge))}
-  .silver .medal{background:radial-gradient(circle at 35% 30%,#fff,var(--silver) 55%,var(--silver-edge))}
-  .bronze .medal{background:radial-gradient(circle at 35% 30%,#ffd9b8,var(--bronze) 55%,var(--bronze-edge))}
-  .pedestal{width:100%;border-radius:14px 14px 6px 6px;display:flex;align-items:flex-start;justify-content:center;padding-top:24px;
-    border:1px solid rgba(255,255,255,.08);border-bottom:none;animation:grow .6s cubic-bezier(.2,.8,.25,1) both}
-  .gold .pedestal{height:clamp(150px,26vw,230px);background:linear-gradient(180deg,rgba(255,216,107,.30),rgba(255,216,107,.06) 60%,transparent)}
-  .silver .pedestal{height:clamp(110px,20vw,168px);background:linear-gradient(180deg,rgba(221,229,242,.24),rgba(221,229,242,.05) 60%,transparent)}
-  .bronze .pedestal{height:clamp(84px,15vw,124px);background:linear-gradient(180deg,rgba(228,151,90,.24),rgba(228,151,90,.05) 60%,transparent)}
-  @keyframes grow{from{opacity:0;transform:scaleY(.7);transform-origin:bottom}to{opacity:1;transform:scaleY(1)}}
-  .pedestal .rank{font-family:var(--disp);font-weight:800;font-size:clamp(2.2rem,6vw,3.6rem);line-height:1;opacity:.9}
-  .gold .rank{color:var(--gold)} .silver .rank{color:var(--silver)} .bronze .rank{color:var(--bronze)}
+  .teams{position:relative;z-index:2;display:flex;flex-direction:column;gap:8px;align-items:center;width:100%;margin-bottom:12px}
+  .chip{width:100%;max-width:220px;text-align:center;border-radius:16px;padding:10px 12px;
+    background:linear-gradient(180deg,rgba(14,40,74,.9),rgba(8,22,44,.92));backdrop-filter:blur(3px);animation:materialize .7s ease both}
+  .chip .name{font-family:var(--util);font-weight:700;font-size:clamp(.92rem,1.9vw,1.12rem);line-height:1.12;letter-spacing:.01em}
+  .chip .pts{margin-top:2px;font-family:var(--disp);font-weight:500;font-size:.82rem;color:var(--muted)}
+  .chip .pts b{color:var(--ink);font-size:1rem}
+  @keyframes materialize{0%{opacity:0;filter:blur(7px);transform:translateY(8px)}60%{opacity:.6;filter:blur(2px)}100%{opacity:1;filter:blur(0);transform:none}}
+  .tier1 .chip{border:1px solid rgba(191,233,255,.6)} .tier1 .name{color:var(--ice)}
+  .tier2 .chip{border:1px solid rgba(79,195,247,.55)} .tier2 .name{color:var(--cyan)}
+  .tier3 .chip{border:1px solid rgba(139,155,255,.5)} .tier3 .name{color:var(--violet)}
+  .empty-chip{max-width:220px;width:100%;text-align:center;border-radius:16px;padding:12px;border:1px dashed var(--line);
+    color:var(--muted);font-family:var(--disp);letter-spacing:.08em;font-size:.68rem;text-transform:uppercase}
 
-  /* ---- Por misión ---- */
-  .board{margin:24px auto 0;max-width:100%;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:rgba(255,255,255,.02)}
+  .base{position:relative;z-index:2;width:clamp(120px,19vw,180px);height:30px;border-radius:50%;display:grid;place-items:center}
+  .tier1 .base{background:radial-gradient(ellipse at center,rgba(191,233,255,.55),transparent 68%);box-shadow:0 0 34px rgba(191,233,255,.5),inset 0 0 20px rgba(191,233,255,.4)}
+  .tier2 .base{background:radial-gradient(ellipse at center,rgba(79,195,247,.5),transparent 68%);box-shadow:0 0 30px rgba(79,195,247,.4),inset 0 0 18px rgba(79,195,247,.35)}
+  .tier3 .base{background:radial-gradient(ellipse at center,rgba(139,155,255,.45),transparent 68%);box-shadow:0 0 26px rgba(139,155,255,.35),inset 0 0 16px rgba(139,155,255,.3)}
+  .idle .base{background:radial-gradient(ellipse at center,rgba(120,150,190,.2),transparent 68%);box-shadow:inset 0 0 14px rgba(120,150,190,.2)}
+  .base::before{content:"";position:absolute;inset:5px 16px;border-radius:50%;border:1px solid rgba(255,255,255,.16)}
+  .pnum{position:relative;z-index:3;font-family:var(--disp);font-weight:700;font-size:1.25rem;color:#fff}
+  .tier1 .pnum{color:var(--ice)} .tier2 .pnum{color:var(--cyan)} .tier3 .pnum{color:var(--violet)}
+  .rlabel{margin-top:9px;font-family:var(--disp);letter-spacing:.14em;font-size:.58rem;color:var(--muted);text-transform:uppercase}
+
+  /* ---- Mission log ---- */
+  .logframe{border:1px solid var(--line);border-radius:26px;overflow:hidden;background:rgba(8,24,48,.7);margin-top:6px}
   .scrollx{overflow-x:auto}
-  table{border-collapse:collapse;width:100%;min-width:520px}
-  th,td{padding:14px 14px;text-align:center;white-space:nowrap;border-bottom:1px solid var(--line)}
-  thead th{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;
-    background:var(--stage-1);position:sticky;top:0}
+  table{border-collapse:collapse;width:100%;min-width:560px}
+  th,td{padding:13px 14px;text-align:center;white-space:nowrap;border-bottom:1px solid var(--line)}
+  thead th{font-family:var(--disp);letter-spacing:.08em;font-size:.66rem;text-transform:uppercase;color:var(--cyan);font-weight:600;background:rgba(10,30,58,.95);position:sticky;top:0}
   tbody tr:last-child td{border-bottom:none}
-  tbody tr:hover td{background:rgba(255,255,255,.03)}
-  .c-pos{width:56px;font-family:var(--disp);font-weight:800;font-size:1.1rem;color:var(--muted)}
-  .c-team{text-align:left;font-weight:600;position:sticky;left:0;background:var(--stage-0);z-index:1}
-  thead .c-team{background:var(--stage-1)}
-  .c-num{font-feature-settings:"tnum" 1;font-weight:500;color:var(--ink)}
-  .c-num.blank{color:rgba(148,140,192,.5)}
-  .c-num.lead{color:var(--gold);font-weight:700}
-  .c-total{font-family:var(--disp);font-weight:800;font-size:1.15rem;background:rgba(255,216,107,.06)}
-  thead .c-total{color:var(--gold);background:rgba(255,216,107,.08)}
-  tr.t1 .c-pos{color:var(--gold)} tr.t2 .c-pos{color:var(--silver)} tr.t3 .c-pos{color:var(--bronze)}
-  .c-pos .m{font-size:.9rem}
+  tbody tr:hover td{background:rgba(79,195,247,.06)}
+  .c-pos{width:60px;font-family:var(--disp);font-weight:700;font-size:1.15rem;color:var(--muted)}
+  .c-team{text-align:left;font-weight:700;font-size:1.05rem;position:sticky;left:0;background:rgba(8,24,48,.92);z-index:1}
+  thead .c-team{background:rgba(10,30,58,.95);color:var(--cyan)}
+  .c-num{font-family:var(--disp);font-weight:500;font-size:1.02rem}
+  .c-num.blank{color:rgba(127,155,198,.5)}
+  .c-num.lead{color:var(--glow);font-weight:700;text-shadow:0 0 10px rgba(95,208,255,.5)}
+  .c-total{font-family:var(--disp);font-weight:700;font-size:1.25rem;color:var(--ice);background:rgba(79,195,247,.08)}
+  thead .c-total{color:var(--cyan)}
+  .c-total.lead{color:#fff;text-shadow:0 0 14px rgba(191,233,255,.7)}
+  tr.t1 .c-pos{color:var(--ice)} tr.t2 .c-pos{color:var(--cyan)} tr.t3 .c-pos{color:var(--violet)}
 
-  /* mensajes */
-  .msg{text-align:center;margin:0 auto;max-width:520px;padding:44px 20px}
-  .msg .big{font-family:var(--disp);font-weight:700;font-size:clamp(1.4rem,4vw,2rem);margin-bottom:10px}
-  .msg p{color:var(--muted);line-height:1.5}
-  .spinner{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;margin:0 auto 18px;animation:spin 1s linear infinite}
+  /* messages */
+  .msg{text-align:center;margin:auto;max-width:520px;padding:40px 20px}
+  .msg .big{font-family:var(--disp);font-weight:700;letter-spacing:.05em;font-size:clamp(1.3rem,3.8vw,1.9rem);color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+  .msg p{color:var(--muted);line-height:1.5;font-size:1.02rem}
+  .spinner{width:42px;height:42px;border:2px solid var(--line);border-top-color:var(--cyan);border-radius:50%;margin:0 auto 18px;animation:spin 1s linear infinite;box-shadow:0 0 18px rgba(79,195,247,.3)}
   @keyframes spin{to{transform:rotate(360deg)}}
-  footer{margin-top:26px;text-align:center;color:var(--muted);font-size:.78rem}
 
+  footer{display:flex;align-items:center;justify-content:center;gap:12px;color:var(--muted);
+    font-family:var(--disp);letter-spacing:.08em;font-size:.66rem;text-transform:uppercase}
+  footer .r{width:12px;height:12px;border-radius:50%;border:2px solid var(--cyan);opacity:.7}
+
+  @media (max-width:640px){
+    header{border-radius:40px;padding:18px 22px}
+    .screen{border-radius:26px;padding:18px 14px 22px}
+  }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-  <div class="orb a"></div><div class="orb b"></div>
-  <div class="wrap">
+  <div class="tardis">
     <header>
-      <div>
-        <span class="eyebrow"><span class="dot"></span>Tablero en vivo</span>
-        <h1>EDET <span class="lg">LEAGUE</span></h1>
+      <div class="who">
+        <span class="eyebrow"><span class="dot"></span>Bitácora de la Enterprise · en vivo</span>
+        <h1>EDET LEAGUE</h1>
+        <span class="sub">Misión intergaláctica · misión educativa</span>
       </div>
-      <div class="controls">
-        <span class="status" id="status"><span class="live"></span><span id="statusText">Cargando…</span></span>
-        <button id="refreshBtn">Actualizar</button>
+      <div class="ctl">
+        <span class="status" id="status"><span class="live"></span><span id="statusText">Enlazando…</span></span>
+        <button class="btn" id="refreshBtn">Sincronizar</button>
       </div>
     </header>
 
-    <div style="display:flex;justify-content:center">
+    <div class="screen">
       <div class="tabs">
         <button class="tab" data-v="podio">Podio</button>
-        <button class="tab active" data-v="mision">Por misión</button>
+        <button class="tab active" data-v="mision">Registro de misión</button>
+      </div>
+
+      <div class="view" id="podioView">
+        <div class="scanline">— Sala de teletransporte · materializando tripulación —</div>
+        <div id="podioBody"><div class="msg"><div class="spinner"></div><p>Fijando coordenadas…</p></div></div>
+      </div>
+      <div class="view active" id="misionView">
+        <div class="scanline">— Registro de misión · puntajes por desafío —</div>
+        <div id="misionBody"><div class="msg"><div class="spinner"></div><p>Descargando telemetría…</p></div></div>
       </div>
     </div>
 
-    <main class="stage">
-      <div class="view" id="podioView">
-        <div class="spot"></div>
-        <div id="podioBody"><div class="msg"><div class="spinner"></div><p>Trayendo resultados…</p></div></div>
-      </div>
-      <div class="view active" id="misionView">
-        <div id="misionBody"><div class="msg"><div class="spinner"></div><p>Trayendo resultados…</p></div></div>
-      </div>
-    </main>
-
-    <footer><span id="foot">Se actualiza automáticamente durante la semana</span></footer>
+    <footer><span class="r"></span><span id="foot">La Enterprise sincroniza con la planilla cada 60 segundos</span><span class="r"></span></footer>
   </div>
 
 <script>
@@ -161,8 +190,8 @@
   const REFRESH_MS = 60000;
   // =======================
 
-  const MEDALS=["🥇","🥈","🥉"], TIER=["gold","silver","bronze"];
-  let lastData=null, activeView="mision";
+  const TIER=["tier1","tier2","tier3"];
+  let lastData=null;
 
   function parseCSV(text){
     const rows=[]; let row=[],field="",q=false;
@@ -174,7 +203,6 @@
     if(field.length||row.length){row.push(field);rows.push(row);}
     return rows;
   }
-
   function num(v){ const n=parseFloat((v||"").toString().replace(/[^\d.,-]/g,"").replace(",",".")); return isNaN(n)?null:n; }
   function fmt(n){ return Number.isInteger(n)?n:n.toFixed(1); }
   function esc(s){ return (s||"").replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
@@ -186,9 +214,11 @@
     if(totalIdx<0) totalIdx=header.findIndex(h=>/puntaje/i.test(h));
     if(totalIdx<0) totalIdx=header.findIndex(h=>/total/i.test(h));
     const rankIdx=header.findIndex(h=>/ranking/i.test(h));
+    let cutoff=header.length;
+    if(totalIdx>=0) cutoff=Math.min(cutoff,totalIdx);
+    if(rankIdx>=0) cutoff=Math.min(cutoff,rankIdx);
     const missionIdx=[];
-    header.forEach((h,i)=>{ if(i===0||i===totalIdx||i===rankIdx||!h) return;
-      if(/puntaje|ranking/i.test(h)) return; missionIdx.push(i); });
+    for(let i=1;i<cutoff;i++){ const h=header[i]; if(!h||/puntaje|ranking/i.test(h)) continue; missionIdx.push(i); }
     const teams=[];
     for(let r=1;r<rows.length;r++){
       const cells=rows[r]; const name=(cells[0]||"").trim();
@@ -211,26 +241,32 @@
   function renderPodium(teams){
     const el=document.getElementById("podioBody");
     const maxScore=teams.reduce((m,t)=>Math.max(m,t.score),0);
-    if(!teams.length){ el.innerHTML=`<div class="msg"><div class="big">Sin equipos todavía</div><p>Cuando la planilla tenga equipos, el podio aparece acá.</p></div>`; return; }
-    if(maxScore<=0){ el.innerHTML=`<div class="msg"><div class="big">El podio se define esta semana</div><p>Todos arrancan en cero. Con cada misión resuelta, las posiciones se arman en vivo.</p></div>`; return; }
+    if(!teams.length){ el.innerHTML=`<div class="msg"><div class="big">Sin tripulación</div><p>Cargá los equipos en la planilla y la sala de teletransporte los materializa acá.</p></div>`; return; }
+    if(maxScore<=0){ el.innerHTML=`<div class="msg"><div class="big">Coordenadas sin fijar</div><p>Toda la tripulación arranca en cero. Con la primera misión resuelta, las plataformas se encienden en vivo.</p></div>`; return; }
     const ranked=rankTeams(teams), byTier={1:[],2:[],3:[]};
     ranked.forEach(t=>{ if(t.pos<=3) byTier[t.pos].push(t); });
-    let html='<div class="podium">';
+    const H={1:290,2:225,3:175};
+    let html='<div class="rotors">';
     [2,1,3].forEach(p=>{
-      const cls=TIER[p-1], list=byTier[p]; let chips="";
-      if(list.length) list.forEach((t,i)=>{ chips+=`<div class="chip" style="animation-delay:${i*0.06}s"><div class="name">${esc(t.name)}</div><div class="pts"><b>${fmt(t.score)}</b> pts</div></div>`; });
-      else chips=`<div class="empty-chip">Por definirse</div>`;
-      html+=`<div class="col ${cls}"><div class="teams">${chips}</div><div class="medal">${MEDALS[p-1]}</div><div class="pedestal"><span class="rank">${p}</span></div></div>`;
+      const cls=TIER[p-1], list=byTier[p], h=H[p];
+      let chips="", idle=list.length?"":"idle";
+      if(list.length) list.forEach((t,i)=>{ chips+=`<div class="chip" style="animation-delay:${i*0.09}s"><div class="name">${esc(t.name)}</div><div class="pts"><b>${fmt(t.score)}</b> pts</div></div>`; });
+      else chips=`<div class="empty-chip">Sin fijar</div>`;
+      html+=`<div class="rotor-col ${cls} ${idle}" style="--h:${h}px">
+        <div class="tube"><span class="rod" style="left:32%"></span><span class="rod" style="left:66%"></span><div class="rotorlight"></div></div>
+        <div class="teams">${chips}</div>
+        <div class="base"><span class="pnum">${p}</span></div>
+        <div class="rlabel">Plataforma 0${p}</div>
+      </div>`;
     });
     el.innerHTML=html+'</div>';
   }
 
   function renderMissions(teams,missions){
     const el=document.getElementById("misionBody");
-    if(!teams.length){ el.innerHTML=`<div class="msg"><div class="big">Sin equipos todavía</div><p>Cargá los equipos en la planilla para ver el detalle.</p></div>`; return; }
-    if(!missions.length){ el.innerHTML=`<div class="msg"><div class="big">Todavía no se jugó ninguna misión</div><p>Apenas cargues puntajes de la primera misión, la columna aparece acá sola.</p></div>`; return; }
+    if(!teams.length){ el.innerHTML=`<div class="msg"><div class="big">Sin tripulación</div><p>Cargá los equipos en la planilla para ver el registro.</p></div>`; return; }
+    if(!missions.length){ el.innerHTML=`<div class="msg"><div class="big">Registro en blanco</div><p>Todavía no se completó ninguna misión. Al cargar la primera, su columna aparece acá sola.</p></div>`; return; }
     const ranked=rankTeams(teams);
-    // máximo por misión y total (para destacar al líder de cada misión)
     const maxBy={}; missions.forEach(m=>{ maxBy[m]=Math.max(...teams.map(t=>num(t.missions[m])||0)); });
     const maxTotal=Math.max(...teams.map(t=>t.total));
     let head=`<tr><th class="c-pos">#</th><th class="c-team">Equipo</th>`;
@@ -239,18 +275,13 @@
     let body="";
     ranked.forEach(t=>{
       const tc=t.pos<=3?"t"+t.pos:"";
-      const medal=t.pos<=3?`<span class="m">${MEDALS[t.pos-1]}</span>`:t.pos;
       let cells="";
-      missions.forEach(m=>{
-        const v=t.missions[m], n=num(v);
-        const blank=(v===""||v==null);
-        const lead=(n!=null&&maxBy[m]>0&&n===maxBy[m]);
-        cells+=`<td class="c-num ${blank?'blank':''} ${lead?'lead':''}">${blank?'·':esc(v)}</td>`;
-      });
+      missions.forEach(m=>{ const v=t.missions[m], n=num(v), blank=(v===""||v==null), lead=(n!=null&&maxBy[m]>0&&n===maxBy[m]);
+        cells+=`<td class="c-num ${blank?'blank':''} ${lead?'lead':''}">${blank?'·':esc(v)}</td>`; });
       const totLead=t.total===maxTotal&&maxTotal>0?'lead':'';
-      body+=`<tr class="${tc}"><td class="c-pos">${medal}</td><td class="c-team">${esc(t.name)}</td>${cells}<td class="c-total ${totLead}">${fmt(t.total)}</td></tr>`;
+      body+=`<tr class="${tc}"><td class="c-pos">${t.pos}</td><td class="c-team">${esc(t.name)}</td>${cells}<td class="c-total ${totLead}">${fmt(t.total)}</td></tr>`;
     });
-    el.innerHTML=`<div class="board"><div class="scrollx"><table><thead>${head}</thead><tbody>${body}</tbody></table></div></div>`;
+    el.innerHTML=`<div class="logframe"><div class="scrollx"><table><thead>${head}</thead><tbody>${body}</tbody></table></div></div>`;
   }
 
   function setStatus(state,text){
@@ -270,11 +301,11 @@
       renderMissions(data.teams,data.missions);
       const now=new Date().toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"});
       setStatus("live","En vivo · "+now);
-      document.getElementById("foot").textContent="Última actualización "+now+" · se refresca cada minuto";
+      document.getElementById("foot").textContent="Última sincronización "+now+" · la Enterprise refresca cada minuto";
     }catch(e){
-      setStatus("err","Sin conexión");
+      setStatus("err","Enlace perdido");
       if(!lastData){
-        const m=`<div class="msg"><div class="big">No pude leer la planilla</div><p>Verificá que siga publicada en la web (Archivo → Compartir → Publicar en la web) y reintentá con Actualizar.</p></div>`;
+        const m=`<div class="msg"><div class="big">Sin señal</div><p>Verificá que la planilla siga publicada en la web y reintentá con Sincronizar.</p></div>`;
         document.getElementById("podioBody").innerHTML=m;
         document.getElementById("misionBody").innerHTML=m;
       }
@@ -283,10 +314,10 @@
 
   document.getElementById("refreshBtn").addEventListener("click",load);
   document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{
-    activeView=b.dataset.v;
+    const v=b.dataset.v;
     document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));
-    document.getElementById("podioView").classList.toggle("active",activeView==="podio");
-    document.getElementById("misionView").classList.toggle("active",activeView==="mision");
+    document.getElementById("podioView").classList.toggle("active",v==="podio");
+    document.getElementById("misionView").classList.toggle("active",v==="mision");
   }));
 
   load();
